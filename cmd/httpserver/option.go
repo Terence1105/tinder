@@ -6,7 +6,7 @@ import (
 
 const (
 	HttpServerPortFlag       = "port"
-	HttpServerPortVal        = 80
+	HttpServerPortVal        = 8080
 	HttpServerhandlerTypeGin = "gin"
 )
 

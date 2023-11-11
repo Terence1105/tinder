@@ -1,0 +1,132 @@
+definitions:
+  app.BaseResponse:
+    properties:
+      error:
+        type: string
+      result: {}
+    type: object
+  dto.AddSinglePersonAndMatchReq:
+    properties:
+      date_counts:
+        type: integer
+      gender:
+        type: integer
+      height:
+        type: number
+      name:
+        type: string
+    required:
+    - date_counts
+    - gender
+    - height
+    - name
+    type: object
+  dto.QuerySinglePeopleReq:
+    properties:
+      counts:
+        type: integer
+    type: object
+  dto.RemoveSinglePersonReq:
+    properties:
+      gender:
+        type: integer
+      name:
+        type: string
+    required:
+    - gender
+    - name
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/add-single-person-and-match:
+    post:
+      consumes:
+      - application/json
+      description: 加入用戶和配對
+      parameters:
+      - description: raw
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddSinglePersonAndMatchReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+      summary: 加入用戶
+      tags:
+      - tinder
+  /v1/query-single-people:
+    get:
+      consumes:
+      - application/json
+      description: 配對n組
+      parameters:
+      - description: raw
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.QuerySinglePeopleReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+      summary: 配對n組
+      tags:
+      - tinder
+  /v1/remove-single-person:
+    post:
+      consumes:
+      - application/json
+      description: 移除用戶
+      parameters:
+      - description: raw
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RemoveSinglePersonReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/app.BaseResponse'
+      summary: 移除用戶
+      tags:
+      - tinder
+swagger: "2.0"
