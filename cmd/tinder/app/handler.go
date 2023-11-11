@@ -90,7 +90,7 @@ func (a *App) QuerySinglePeople(c *gin.Context) {
 		return
 	}
 
-	matches := make([]dto.Match, req.Counts)
+	matches := make([]dto.Match, 0, req.Counts)
 
 	boys, err := a.storage.GetPeople(c, types.MinHeight, types.MaxHeight, req.Counts, types.BOY)
 	if err != nil {
@@ -145,6 +145,10 @@ func (a *App) QuerySinglePeople(c *gin.Context) {
 
 		if dateCount == 0 {
 			err = a.storage.RemovePerson(c, b.Name, types.BOY)
+		}
+
+		if len(matches) == req.Counts {
+			break
 		}
 	}
 
