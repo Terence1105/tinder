@@ -1,0 +1,12 @@
+FROM golang:1.20 AS builder
+ENV CGO_ENABLED=0
+WORKDIR /app
+COPY . .
+RUN go build -o tinder /app/cmd/tinder/
+
+
+FROM alpine:3.18
+WORKDIR /tinder
+COPY --from=builder /app/tinder /tinder/src
+
+ENTRYPOINT ["/tinder/src"]
