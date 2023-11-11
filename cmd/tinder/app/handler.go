@@ -111,25 +111,39 @@ func (a *App) QuerySinglePeople(c *gin.Context) {
 			return
 		}
 
-		for dateCount > 0 {
-			girl, err := a.storage.GetPeople(c, types.MinHeight, b.Height, 1, types.GIRL)
-			if err != nil {
-				c.JSON(400, BaseResponse{Error: err.Error()})
-				return
-			}
+		girls, err := a.storage.GetPeople(c, types.MinHeight, b.Height, dateCount, types.GIRL)
+		if err != nil {
+			c.JSON(400, BaseResponse{Error: err.Error()})
+			return
+		}
 
-			if girl == nil {
-				break
-			}
+		if girls == nil {
+			break
+		}
 
-			r, err := a.storage.DecrementDateCount(c, girl[0].Name)
+		for _, girl := range girls {
+			r, err := a.storage.DecrementDateCount(c, girl.Name)
 			if err != nil {
 				c.JSON(400, BaseResponse{Error: err.Error()})
 				return
 			}
 
 			if r == 0 {
-				err = a.storage.RemovePerson(c, girl[0].Name, girl[0].Gender)
+				err = a.storage.RemovePerson(c, girl.Name, girl.Gender)
+				if err != nil {
+					c.JSON(400, BaseResponse{Error: err.Error()})
+					return
+				}
+			}
+
+			bdc, err := a.storage.DecrementDateCount(c, b.Name)
+			if err != nil {
+				c.JSON(400, BaseResponse{Error: err.Error()})
+				return
+			}
+
+			if bdc == 0 {
+				err = a.storage.RemovePerson(c, b.Name, b.Gender)
 				if err != nil {
 					c.JSON(400, BaseResponse{Error: err.Error()})
 					return
@@ -138,17 +152,12 @@ func (a *App) QuerySinglePeople(c *gin.Context) {
 
 			matches = append(matches, dto.Match{
 				Boy:  b.Name,
-				Girl: girl[0].Name,
+				Girl: girl.Name,
 			})
-			dateCount--
-		}
 
-		if dateCount == 0 {
-			err = a.storage.RemovePerson(c, b.Name, types.BOY)
-		}
-
-		if len(matches) == req.Counts {
-			break
+			if len(matches) >= req.Counts {
+				break
+			}
 		}
 	}
 
